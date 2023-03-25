@@ -12,7 +12,7 @@ Emoji64 works in the same way as base64 and can be used to add a fun and playful
 
 ### Use in your browser
 
-Open [emoji64](http://AwesomeDog.github.io/emoji64) and you are ready to go.
+Open [emoji64](http://AwesomeDog.github.io/emoji64/) and you are ready to go.
 
 It looks like this:
 
