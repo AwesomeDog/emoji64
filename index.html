@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>emoji64: base64 encoding/decoding, but with emoji</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😀</text></svg>">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Balsamiq+Sans">
+    <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"
+            integrity="sha256-S0lp+k7zWUMk2ixteM6HZvu8L9Eh//OVrt+ZfbCpmgY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"
+            integrity="sha256-IXWO0ITNDjfnNXIu5POVfqlgYoop36bDzhodR6LW5Pc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"
+            integrity="sha256-FiZMk1zgTeujzf/+vomWZGZ9r00+xnGvOgXoj0Jo1jA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dayjs.min.js"
+            integrity="sha256-EfJOqCcshFS/2TxhArURu3Wn8b/XDA4fbPWKSwZ+1B8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.3.1/dist/reset.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/antd@5.3.1/dist/antd.min.js"
+            integrity="sha256-e5xZsNr7K11ZcdaTDHLLfkruUNg6G3SXwe09IjW7G3A=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ant-design/icons@5.0.1/dist/index.umd.min.js"
+            integrity="sha256-+KYfTFUlnbzHuTFNXe6JTcJEgGeIJL8dHN9tXrMr+9o=" crossorigin="anonymous"></script>
+    <style> /* for github icon animation */
+    .github-corner:hover .octo-arm {
+        animation: octocat-wave 560ms ease-in-out;
+    }
+
+    @keyframes octocat-wave {
+        0%,
+        100% {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+
+    @media (max-width: 500px) {
+        .github-corner:hover .octo-arm {
+            animation: none;
+        }
+
+        .github-corner .octo-arm {
+            animation: octocat-wave 560ms ease-in-out;
+        }
+    }
+    </style>
+</head>
+
+<body style="background:#ee6644;">
+<div id="root"></div>
+<script type="text/babel">
+  const emoji64Encode = (s) => Base64.encode(s).split('').map(c => String.fromCodePoint(c.charCodeAt(0) + (128512 - 43))).join('')
+  const emoji64Decode = (e) => Base64.decode([...e].reduce((acc, cur) => acc + String.fromCodePoint(cur.codePointAt(0) - (128512 - 43)), ''))
+  const emoji64Auto = (s) => s.codePointAt(0) >= (128512 - 43) ? emoji64Decode(s.trim()) : emoji64Encode(s)
+
+  function App () {
+    const codecEmojis = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + (128512 - 43)))
+    const randomEmoji = () => codecEmojis[Math.floor(Math.random() * codecEmojis.length)]
+    const [titleKey, setTitleKey] = React.useState(false)
+
+    return (
+      <React.Fragment>
+        <antd.ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#00b96b',
+              colorBgLayout: '#ee6644',
+              fontFamily: 'Balsamiq Sans, serif',
+              fontSize: '24px',
+              fontSizeHeading1: '2em',
+              fontSizeHeading2: '1.5em',
+            },
+          }}
+        >
+          <antd.App>
+            <antd.Layout>
+              <antd.Layout.Header style={{
+                textAlign: 'center',
+                height: 64 * 3,
+                background: '#ee6644',
+                margin: '32px',
+                cursor: 'pointer',
+                userSelect: 'none',
+              }}>
+                <antd.Typography.Title
+                  key={titleKey}
+                  onClick={() => setTitleKey(!titleKey)}
+                >
+                  {randomEmoji()} emoji64 {randomEmoji()}
+                </antd.Typography.Title>
+                <antd.Typography.Title level={2}>encode text to emoji and back again</antd.Typography.Title>
+                <a
+                  href="https://github.com/AwesomeDog/emoji64"
+                  className="github-corner"
+                  title="View source on Github"
+                  target="_blank"
+                >
+                  <svg
+                    width="80"
+                    height="80"
+                    viewBox="0 0 250 250"
+                    style={{
+                      fill: 'black',
+                      color: '#ee6644',
+                      position: 'absolute',
+                      top: 0,
+                      border: 0,
+                      left: 0,
+                      transform: 'scale(-1, 1)'
+                    }}
+                    aria-hidden="true"
+                  >
+                    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/>
+                    <path
+                      d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                      fill="currentColor"
+                      style={{ transformOrigin: '130px 106px' }}
+                      className="octo-arm"
+                    />
+                    <path
+                      d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                      fill="currentColor"
+                      className="octo-body"
+                    />
+                  </svg>
+                </a>
+              </antd.Layout.Header>
+              <antd.Layout.Content>
+                <Emoji64Recode/>
+              </antd.Layout.Content>
+              <antd.Layout.Footer style={{
+                textAlign: 'center',
+                fontSize: '16px',
+              }}>
+                <a href="https://github.com/AwesomeDog" target="_blank" style={{ color: 'black' }}
+                >Made with ❤️ by AwesomeDog</a>
+              </antd.Layout.Footer>
+            </antd.Layout>
+          </antd.App>
+        </antd.ConfigProvider>
+      </React.Fragment>
+    )
+  }
+
+  function Emoji64Recode () {
+    const [userText, setUserText] = React.useState('')
+    const [resultText, setResultText] = React.useState('')
+    const [copied, setCopied] = React.useState(false)
+
+    React.useEffect(() => {
+      let r = 'Decoding Error...Please refresh page and retry'
+      try {
+        r = emoji64Auto(userText)
+      } catch (error) {
+        console.error(error)
+      }
+      setResultText(r)
+      setCopied(false)
+    }, [userText])
+
+    return (
+      <React.Fragment>
+        <antd.Row style={{ justifyContent: 'center', }}>
+          <antd.Col xs={16} sm={8}>
+            <antd.Input.TextArea
+              placeHolder="Type or paste here..."
+              style={{ minHeight: 300, }}
+              value={userText}
+              onChange={e => setUserText(e.target.value)}/>
+            {userText ? <antd.Button
+              type="primary"
+              style={{
+                zIndex: 2,
+                bottom: '8px',
+                right: '8px',
+                position: 'absolute',
+              }}
+              onClick={() => setUserText('')}
+            >Clear
+            </antd.Button> : null}
+          </antd.Col>
+          <antd.Col xs={16} sm={8}>
+            <antd.Input.TextArea
+              readOnly
+              value={resultText}
+              placeHolder="Emoji translation will appear here..."
+              style={{ minHeight: 300, }}
+            />
+            {userText ? <antd.Button
+              type="primary"
+              style={{
+                zIndex: 2,
+                bottom: '8px',
+                right: '8px',
+                position: 'absolute',
+              }}
+              onClick={async () => {
+                await navigator.clipboard.writeText(resultText)
+                setCopied(true)
+              }}
+            >{copied ? 'Copied' : 'Copy'}
+            </antd.Button> : null}
+          </antd.Col>
+        </antd.Row>
+      </React.Fragment>
+    )
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>)
+</script>
+</body>
+</html>
